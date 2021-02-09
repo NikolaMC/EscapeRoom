@@ -7,4 +7,5 @@ public class Person extends Npc {
         super(name);
         this.position = startRoom;
     }
+   
 }
