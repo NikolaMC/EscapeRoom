@@ -11,8 +11,8 @@ public class Gui extends JFrame {
     private JPanel buttonPanel;
     private JTextArea showRoom;
     private JTextArea showPersons;
-    private JTextArea output;
     private JTextField input;
+    private JTextArea output;
     private JTextArea inventory;
     private String command;
     private boolean gotCommand;
@@ -49,12 +49,16 @@ public class Gui extends JFrame {
         this.showRoom.setText(roomDescription);
     }
     
-    public void setShowPersons(Person person) {
-        this.showPersons.setText(person.toString());
+    public void setShowPersons(Person person, String npcPosition) {
+        this.showPersons.setText(person.toString() + "\nLocation - " + npcPosition);
+    }
+    
+    public void removeShowPersons() {
+    	this.showPersons.setText("NPCs");
     }
     
     public void setShowInventory(Inventory i) {
-        this.input.setText(i.toString());
+        this.inventory.setText(i.getNames());
     }
     
     public void setStatus(String output) {

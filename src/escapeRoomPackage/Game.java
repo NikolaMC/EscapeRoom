@@ -1,5 +1,8 @@
 package escapeRoomPackage;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class Game {
 
 	Gui gui;
@@ -25,18 +28,19 @@ public class Game {
 		rooms[2] = room3;
 		rooms[3] = room4;
 		
-		this.cabinet = new Container("Cabinet", false, true);
+		this.cabinet = new Container("Cabinet", false, false);
 		this.book = new GameObject("Book", true);
 		this.rock = new GameObject("Rock", true);
-		this.npc1 = new Person("Npc1", 1);
+		this.npc1 = new Person("Jack", 1);
 		
-		cabinet.addObject(book);
+		player.addObject(book);
 		npc1.addObject(rock);
-		
-		System.out.println(cabinet.getInventory().getNames());
 		
 		room1.addObject(cabinet);
 		room2.addNpc(npc1);
+		
+		ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(10);
+        pool.scheduleAtFixedRate(npc1, 2, 10, TimeUnit.SECONDS);
 		
 		while (true) {
 			
@@ -69,9 +73,10 @@ public class Game {
 						}
 						break;
 						
-					case "move":
-						npc1.moveObject(cabinet.getInventory(), rock);
-						System.out.println(cabinet.getInventory().getNames());
+					case "trade":
+						if (player.getCurrentLocation() == npc1.getPosition()) {
+							npc1.getInventory().tradeObject(player.getInventory(), npc1.getFirstItem());
+						}
 						break;
 	
 					default:
@@ -81,7 +86,12 @@ public class Game {
 			}
 			
 			gui.setShowRoom(rooms[player.getCurrentLocation()].getRoom());
-			gui.setShowPersons(npc1);
+			gui.setShowInventory(player.getInventory());
+			if (player.getCurrentLocation() == npc1.getPosition()) {
+				gui.setShowPersons(npc1, rooms[npc1.getPosition()].getName());
+			} else {
+				gui.removeShowPersons();
+			}
 			
 		}
 		

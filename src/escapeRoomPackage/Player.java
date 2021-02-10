@@ -25,6 +25,10 @@ public class Player {
     public Inventory getInventory() {
         return this.inventory;
     }
+    
+    public GameObject getFirstItem() {
+    	return this.inventory.firstObject();
+    }
 	
 	public int getCurrentLocation() {
 		return currentLocation;

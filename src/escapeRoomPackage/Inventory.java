@@ -39,8 +39,23 @@ public class Inventory {
 		}
     }
     
+    public void tradeObject(Inventory i2, GameObject go) {
+    	if (isObjectHere(go) && i2.getFirstEmptyIndex() > 0) {
+    		GameObject firstItem = i2.list[0];
+    		
+			this.removeObject(go);
+			i2.removeObject(firstItem);
+			i2.addObject(go);
+			this.addObject(firstItem);
+		}
+    }
+    
     public String toString() {
         return Arrays.toString(this.list);
+    }
+    
+    public GameObject firstObject() {
+    	return this.list[0];
     }
     
     public String getNames() {
