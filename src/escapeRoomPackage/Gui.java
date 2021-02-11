@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 
 public class Gui extends JFrame {
 	
+	private Room[] rooms;
+	private Player player;
+	private Person npc1;
+	
 	private JPanel mainPanel;
     private JPanel textPanel;
     private JPanel buttonPanel;
@@ -15,11 +19,18 @@ public class Gui extends JFrame {
     private JTextArea output;
     private JTextArea inventory;
     private String command;
-    private boolean gotCommand;
-    private JButton submitButton;
-    public Gui() {
+    private JButton takeButton;
+    private JButton dropButton;
+    private JButton tradeButton;
+    private JButton goForwardButton;
+    private JButton goBackwardButton;
+    
+    public Gui(Room[] rooms, Player player, Person npc1) {
     	
-        this.gotCommand = false;
+    	this.rooms = rooms;
+    	this.player = player;
+    	this.npc1 = npc1;
+    	
         this.command = "";
         this.setTitle("Game");
         this.setSize(800, 600);
@@ -30,18 +41,6 @@ public class Gui extends JFrame {
         this.setVisible(true);
         this.setResizable(false);
         
-    }
-
-    // Returnera det senaste commitade kommandot
-    public String getCommand() {
-    	
-        if (this.gotCommand) {
-            System.out.println(this.command);
-            return this.command;
-        }
-        
-        return "-1";
-
     }
     
     // Här kan man updatera respektive fält:
@@ -61,7 +60,7 @@ public class Gui extends JFrame {
         this.inventory.setText(i.getNames());
     }
     
-    public void setStatus(String output) {
+    public void setOutput(String output) {
     	this.output.setText(output);
     }
 
@@ -72,18 +71,17 @@ public class Gui extends JFrame {
 
 // Nedantåenda spaghetti är inte vacker...
 
-
-    public void gotCommand() {
-        this.gotCommand = false;
-    }
-
     private void setUpPanels() {
         this.textPanel.add(showPersons);
         this.textPanel.add(showRoom);
         this.textPanel.add(inventory);
         this.textPanel.add(output);
         this.textPanel.add(input);
-        this.buttonPanel.add(submitButton);
+        this.buttonPanel.add(takeButton);
+        this.buttonPanel.add(dropButton);
+        this.buttonPanel.add(tradeButton);
+        this.buttonPanel.add(goForwardButton);
+        this.buttonPanel.add(goBackwardButton);
         this.mainPanel.add(textPanel);
         this.mainPanel.add(buttonPanel);
     }
@@ -104,19 +102,89 @@ public class Gui extends JFrame {
         this.output.setEditable(false);
         
         this.buttonPanel = new JPanel();
-
-        ActionListener inputListener = e -> {
-            this.command = input.getText();
-            this.input.setText("");
-            this.gotCommand = true;
-            System.out.println(this.command);
+        
+        setGui();
+        //Room playerRoom = rooms[player.getCurrentLocation()];
+        Inventory playerInventory = player.getInventory();
+        
+        ActionListener takeListener = e -> {
+        	this.command = input.getText();
+        	this.input.setText("");
+        	
+        	if (playerInventory.isNotFull() 
+        			&& rooms[player.getCurrentLocation()].getInventory().getItem(this.command).getMoveable() 
+        			&& rooms[player.getCurrentLocation()].getInventory().isObjectHere(rooms[player.getCurrentLocation()].getInventory().getItem(this.command))) {
+        		
+        		rooms[player.getCurrentLocation()].moveObject(playerInventory, rooms[player.getCurrentLocation()].getInventory().getItem(this.command));
+			}
+        	
+        	setGui();
         };
+        
+        ActionListener dropListener = e -> {
+        	this.command = input.getText();
+        	this.input.setText("");
 
-        input.addActionListener(inputListener);
-
-        this.submitButton = new JButton("Submit");
-        this.submitButton.addActionListener(inputListener);
-
+        	if (rooms[player.getCurrentLocation()].getInventory().isNotFull() && playerInventory.isObjectHere(playerInventory.getItem(this.command))) {
+        		playerInventory.moveObject(rooms[player.getCurrentLocation()].getInventory(), playerInventory.getItem(this.command));
+			}
+        	
+        	setGui();
+        };
+        
+        ActionListener tradeListener = e -> {
+        	this.command = input.getText();
+        	
+        	if (player.getCurrentLocation() == npc1.getPosition()) {
+				npc1.getInventory().tradeObject(playerInventory, npc1.getFirstItem(), playerInventory.getItem(this.command));
+			}
+        	
+        	setGui();
+        };
+        
+        ActionListener forwardListener = e -> {
+        	if (player.getCurrentLocation() < 3) {
+				player.setCurrentLocation(player.getCurrentLocation() + 1);
+			}
+        	
+        	setGui();
+        };
+        
+        ActionListener backwardListener = e -> {        	
+        	if (player.getCurrentLocation() > 0) {
+				player.setCurrentLocation(player.getCurrentLocation() - 1);
+			}
+        	
+        	setGui();
+        };
+        
+        this.takeButton = new JButton("Take item");
+        this.takeButton.addActionListener(takeListener);
+        
+        this.dropButton = new JButton("Drop item");
+        this.dropButton.addActionListener(dropListener);
+        
+        this.tradeButton = new JButton("Trade");
+        this.tradeButton.addActionListener(tradeListener);
+        
+        this.goForwardButton = new JButton("Go forward");
+        this.goForwardButton.addActionListener(forwardListener);
+        
+        this.goBackwardButton = new JButton("Go backward");
+        this.goBackwardButton.addActionListener(backwardListener);
+        
+    }
+    
+    private void setGui() {
+    	setShowRoom(rooms[player.getCurrentLocation()].getRoom());
+    	
+		setShowInventory(player.getInventory());
+		
+		if (player.getCurrentLocation() == npc1.getPosition()) {
+			setShowPersons(npc1, rooms[npc1.getPosition()].getName());
+		} else {
+			removeShowPersons();
+		}
     }
 
 }

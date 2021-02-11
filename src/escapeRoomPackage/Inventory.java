@@ -39,14 +39,13 @@ public class Inventory {
 		}
     }
     
-    public void tradeObject(Inventory i2, GameObject go) {
-    	if (isObjectHere(go) && i2.getFirstEmptyIndex() > 0) {
-    		GameObject firstItem = i2.list[0];
-    		
+    public void tradeObject(Inventory i2, GameObject go, GameObject go1) {
+    	if (isObjectHere(go) && i2.isObjectHere(go1)) {
+    		GameObject item = go1;
 			this.removeObject(go);
-			i2.removeObject(firstItem);
+			i2.removeObject(item);
 			i2.addObject(go);
-			this.addObject(firstItem);
+			this.addObject(item);
 		}
     }
     
@@ -84,6 +83,18 @@ public class Inventory {
         
     }
     
+    public GameObject getItem(String itemName) {
+    	GameObject item = new GameObject("", false);
+    	
+    	for (int i = 0; i < this.list.length; i++) {
+    		if (this.list[i] != null && this.list[i].getName().equals(itemName)) {
+				item = this.list[i];
+			}
+		}
+    	
+    	return item;
+    }
+    
     public boolean isObjectHere(GameObject go) {
     	
     	boolean objectHere = false;
@@ -95,6 +106,19 @@ public class Inventory {
 		}
     	
     	return objectHere;
+    	
+    }
+    
+    public boolean isNotFull() {
+    	
+    	boolean notFull = true;
+    	int index = getFirstEmptyIndex();
+    	
+    	if (index == -1) {
+			notFull = false;
+		}
+    	
+    	return notFull;
     	
     }
 }

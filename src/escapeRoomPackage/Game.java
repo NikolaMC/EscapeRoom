@@ -10,15 +10,14 @@ public class Game {
 	Room[] rooms = new Room[4];
 	Player player;
 	Container cabinet;
-	GameObject book, rock, blueBox;
+	GameObject book, rock, blueBox, stick, statue;
 	Person npc1;
 	
 	public Game() {
 		
-		this.gui = new Gui();
 		this.player = new Player();
 		
-		this.room1 = new Room("Starting room", "There's a small cabinet in one of the corners and a door next to it.\n");
+		this.room1 = new Room("Starting room", "There's a small statue in one of the corners and a door next to it.\n");
 		this.room2 = new Room("Hall", "This hall seems empty. There are 2 doors leading out of it.\n");
 		this.room3 = new Room("Room with blue square", "There are 2 doors leading out of this room. You see a red square on the ground in a corner.\n");
 		this.room4 = new Room("Exit room", "There are 2 doors leading out of this room. One of which is the exit, but it appears to be locked. \nYou see another blue square on the ground next to a wall.\n");
@@ -28,72 +27,27 @@ public class Game {
 		rooms[2] = room3;
 		rooms[3] = room4;
 		
-		this.blueBox = new GameObject("Blue box", true);
-		this.book = new GameObject("Book", true);
-		this.rock = new GameObject("Rock", true);
-		this.npc1 = new Person("Jack", 1);
+		this.blueBox = new GameObject("blue box", true);
+		this.book = new GameObject("book", true);
+		this.rock = new GameObject("rock", true);
+		this.stick = new GameObject("stick", true);
+		this.statue = new GameObject("statue", false);
+				
+		room1.addObject(statue);
+		room1.addObject(book);
+		room2.addObject(stick);
 		
-		player.addObject(book);
-		npc1.addObject(rock);
+		this.npc1 = new Person("Jack", 1, rooms);
 		
-		room3.addObject(blueBox);
 		room2.addNpc(npc1);
+		
+		player.addObject(rock);
+		npc1.addObject(blueBox);
+		
+		this.gui = new Gui(rooms, player, npc1);
 		
 		ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(10);
         pool.scheduleAtFixedRate(npc1, 2, 10, TimeUnit.SECONDS);
-		
-		while (true) {
-			
-			String command = gui.getCommand();
-			
-			if (!command.equals("-1")) {
-				
-				switch (command) {
-					case "1":
-						if (player.getCurrentLocation() == 1) {
-							player.setCurrentLocation(0);
-						}
-						break;
-						
-					case "2":
-						if (player.getCurrentLocation() == 0 || player.getCurrentLocation() == 2) {
-							player.setCurrentLocation(1);
-						}
-						break;
-						
-					case "3":
-						if (player.getCurrentLocation() == 1 || player.getCurrentLocation() == 3) {
-							player.setCurrentLocation(2);
-						}
-						break;
-						
-					case "4":
-						if (player.getCurrentLocation() == 2) {
-							player.setCurrentLocation(3);
-						}
-						break;
-						
-					case "trade":
-						if (player.getCurrentLocation() == npc1.getPosition()) {
-							npc1.getInventory().tradeObject(player.getInventory(), npc1.getFirstItem());
-						}
-						break;
-	
-					default:
-						break;
-				}
-				
-			}
-			
-			gui.setShowRoom(rooms[player.getCurrentLocation()].getRoom());
-			gui.setShowInventory(player.getInventory());
-			if (player.getCurrentLocation() == npc1.getPosition()) {
-				gui.setShowPersons(npc1, rooms[npc1.getPosition()].getName());
-			} else {
-				gui.removeShowPersons();
-			}
-			
-		}
 		
 	}
 	

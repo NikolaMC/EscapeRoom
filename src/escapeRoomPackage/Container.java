@@ -6,7 +6,7 @@ public class Container extends GameObject {
 
     public Container(String name, boolean moveable, boolean locked) {
         super(name, moveable);
-        this.inventory = new Inventory(3);
+        this.inventory = new Inventory(1);
         this.locked = locked;
     }
 
