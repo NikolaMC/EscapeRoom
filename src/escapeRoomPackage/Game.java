@@ -10,7 +10,7 @@ public class Game {
 	Room[] rooms = new Room[4];
 	Player player;
 	Container cabinet;
-	GameObject book, rock;
+	GameObject book, rock, blueBox;
 	Person npc1;
 	
 	public Game() {
@@ -28,7 +28,7 @@ public class Game {
 		rooms[2] = room3;
 		rooms[3] = room4;
 		
-		this.cabinet = new Container("Cabinet", false, false);
+		this.blueBox = new GameObject("Blue box", true);
 		this.book = new GameObject("Book", true);
 		this.rock = new GameObject("Rock", true);
 		this.npc1 = new Person("Jack", 1);
@@ -36,7 +36,7 @@ public class Game {
 		player.addObject(book);
 		npc1.addObject(rock);
 		
-		room1.addObject(cabinet);
+		room3.addObject(blueBox);
 		room2.addNpc(npc1);
 		
 		ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(10);

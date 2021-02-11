@@ -35,7 +35,7 @@ public class Gui extends JFrame {
     // Returnera det senaste commitade kommandot
     public String getCommand() {
     	
-        if (this.gotCommand){
+        if (this.gotCommand) {
             System.out.println(this.command);
             return this.command;
         }
@@ -107,6 +107,7 @@ public class Gui extends JFrame {
 
         ActionListener inputListener = e -> {
             this.command = input.getText();
+            this.input.setText("");
             this.gotCommand = true;
             System.out.println(this.command);
         };
