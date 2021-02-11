@@ -10,7 +10,7 @@ public class Room {
 	public Room(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.inventory = new Inventory(3);
+		this.inventory = new Inventory(4);
 		this.person = new Person[5];
 	}
 	

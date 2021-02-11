@@ -9,6 +9,9 @@ public class Gui extends JFrame {
 	private Room[] rooms;
 	private Player player;
 	private Person npc1;
+	private Key boxKey, doorKey;
+	private Container blueBox;
+	private LockedDoor door;
 	
 	private JPanel mainPanel;
     private JPanel textPanel;
@@ -24,12 +27,17 @@ public class Gui extends JFrame {
     private JButton tradeButton;
     private JButton goForwardButton;
     private JButton goBackwardButton;
+	private JButton unlockButton;
     
-    public Gui(Room[] rooms, Player player, Person npc1) {
+    public Gui(Room[] rooms, Player player, Person npc1, Key boxKey, Key doorKey, Container blueBox, LockedDoor door) {
     	
     	this.rooms = rooms;
     	this.player = player;
     	this.npc1 = npc1;
+    	this.boxKey = boxKey;
+    	this.doorKey = doorKey;
+    	this.blueBox = blueBox;
+    	this.door = door;
     	
         this.command = "";
         this.setTitle("Game");
@@ -80,6 +88,7 @@ public class Gui extends JFrame {
         this.buttonPanel.add(takeButton);
         this.buttonPanel.add(dropButton);
         this.buttonPanel.add(tradeButton);
+        this.buttonPanel.add(unlockButton);
         this.buttonPanel.add(goForwardButton);
         this.buttonPanel.add(goBackwardButton);
         this.mainPanel.add(textPanel);
@@ -104,7 +113,6 @@ public class Gui extends JFrame {
         this.buttonPanel = new JPanel();
         
         setGui();
-        //Room playerRoom = rooms[player.getCurrentLocation()];
         Inventory playerInventory = player.getInventory();
         
         ActionListener takeListener = e -> {
@@ -116,6 +124,7 @@ public class Gui extends JFrame {
         			&& rooms[player.getCurrentLocation()].getInventory().isObjectHere(rooms[player.getCurrentLocation()].getInventory().getItem(this.command))) {
         		
         		rooms[player.getCurrentLocation()].moveObject(playerInventory, rooms[player.getCurrentLocation()].getInventory().getItem(this.command));
+        		setOutput("You picked up " + this.command);
 			}
         	
         	setGui();
@@ -127,6 +136,7 @@ public class Gui extends JFrame {
 
         	if (rooms[player.getCurrentLocation()].getInventory().isNotFull() && playerInventory.isObjectHere(playerInventory.getItem(this.command))) {
         		playerInventory.moveObject(rooms[player.getCurrentLocation()].getInventory(), playerInventory.getItem(this.command));
+        		setOutput("You dropped " + this.command);
 			}
         	
         	setGui();
@@ -137,6 +147,24 @@ public class Gui extends JFrame {
         	
         	if (player.getCurrentLocation() == npc1.getPosition()) {
 				npc1.getInventory().tradeObject(playerInventory, npc1.getFirstItem(), playerInventory.getItem(this.command));
+				setOutput("Successfully traded" + this.command + " and " + npc1.getFirstItem().getName());
+			}
+        	
+        	setGui();
+        };
+        
+        ActionListener unlockListener = e -> {        	
+        	if (playerInventory.isObjectHere(boxKey) && playerInventory.isObjectHere(blueBox) && boxKey.fit(blueBox)) {
+        		playerInventory.removeObject(boxKey);
+        		blueBox.moveObject(playerInventory, doorKey);
+        		playerInventory.removeObject(blueBox);
+        		setOutput("You unlocked the blue box. Inside of it, you find another key");
+        	}
+        	
+        	if (player.getCurrentLocation() == 3 && playerInventory.isObjectHere(doorKey)) {
+				playerInventory.removeObject(doorKey);
+				rooms[3].removeObject(door);
+				setOutput("You successfully escaped!");
 			}
         	
         	setGui();
@@ -145,6 +173,7 @@ public class Gui extends JFrame {
         ActionListener forwardListener = e -> {
         	if (player.getCurrentLocation() < 3) {
 				player.setCurrentLocation(player.getCurrentLocation() + 1);
+				setOutput("You moved to the next room");
 			}
         	
         	setGui();
@@ -153,6 +182,7 @@ public class Gui extends JFrame {
         ActionListener backwardListener = e -> {        	
         	if (player.getCurrentLocation() > 0) {
 				player.setCurrentLocation(player.getCurrentLocation() - 1);
+				setOutput("You moved to the previous room");
 			}
         	
         	setGui();
@@ -167,6 +197,9 @@ public class Gui extends JFrame {
         this.tradeButton = new JButton("Trade");
         this.tradeButton.addActionListener(tradeListener);
         
+        this.unlockButton = new JButton("Unlock");
+        this.unlockButton.addActionListener(unlockListener);
+        
         this.goForwardButton = new JButton("Go forward");
         this.goForwardButton.addActionListener(forwardListener);
         
@@ -176,6 +209,8 @@ public class Gui extends JFrame {
     }
     
     private void setGui() {
+    	boxChecker();
+    	
     	setShowRoom(rooms[player.getCurrentLocation()].getRoom());
     	
 		setShowInventory(player.getInventory());
@@ -184,6 +219,12 @@ public class Gui extends JFrame {
 			setShowPersons(npc1, rooms[npc1.getPosition()].getName());
 		} else {
 			removeShowPersons();
+		}
+    }
+    
+    private void boxChecker() {
+    	if (player.getCurrentLocation() == 2 && rooms[2].getInventory().isObjectHere(blueBox) && rooms[2].getInventory().isNotFull()) {
+			rooms[2].addObject(boxKey);
 		}
     }
 
