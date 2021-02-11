@@ -161,7 +161,7 @@ public class Gui extends JFrame {
         		setOutput("You unlocked the blue box. Inside of it, you find another key");
         	}
         	
-        	if (player.getCurrentLocation() == 3 && playerInventory.isObjectHere(doorKey)) {
+        	if (player.getCurrentLocation() == 3 && playerInventory.isObjectHere(doorKey) && doorKey.fit(door)) {
 				playerInventory.removeObject(doorKey);
 				rooms[3].removeObject(door);
 				setOutput("You successfully escaped!");

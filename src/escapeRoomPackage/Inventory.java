@@ -109,20 +109,6 @@ public class Inventory {
     	
     }
     
-    public boolean isObjectHere(Container c) {
-    	
-    	boolean objectHere = false;
-    	
-    	for (int i = 0; i < this.list.length; i++) {
-    		if (this.list[i] != null && this.list[i].equals(c)) {
-				objectHere = true;
-			}
-		}
-    	
-    	return objectHere;
-    	
-    }
-    
     public boolean isNotFull() {
     	
     	boolean notFull = true;
