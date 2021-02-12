@@ -1,6 +1,8 @@
 package escapeRoomPackage;
 
-public class GameObject {
+import java.io.Serializable;
+
+public class GameObject implements Serializable {
 	private String name;
 	private boolean moveable;
 	

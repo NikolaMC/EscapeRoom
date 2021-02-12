@@ -1,12 +1,13 @@
 package escapeRoomPackage;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Inventory {
+public class Inventory implements Serializable {
 	private GameObject[] list;
 	
     public Inventory(int size) {
