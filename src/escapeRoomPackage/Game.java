@@ -45,7 +45,7 @@ public class Game {
 		
 		blueBox.addObject(doorKey);
 		
-		this.npc1 = new Person("Jack", 1, rooms);
+		this.npc1 = new Person("Jack", 1, rooms, gui);
 		
 		room2.addNpc(npc1);
 		

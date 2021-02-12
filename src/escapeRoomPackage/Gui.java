@@ -1,7 +1,6 @@
 package escapeRoomPackage;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Gui extends JFrame {
@@ -144,10 +143,11 @@ public class Gui extends JFrame {
         
         ActionListener tradeListener = e -> {
         	this.command = input.getText();
+        	this.input.setText("");
         	
-        	if (player.getCurrentLocation() == npc1.getPosition()) {
+        	if (player.getCurrentLocation() == npc1.getPosition() && playerInventory.isObjectHere(playerInventory.getItem(this.command)) && npc1.getFirstItem() != null) {
 				npc1.getInventory().tradeObject(playerInventory, npc1.getFirstItem(), playerInventory.getItem(this.command));
-				setOutput("Successfully traded" + this.command + " and " + npc1.getFirstItem().getName());
+				setOutput("Successfully traded");
 			}
         	
         	setGui();
@@ -159,9 +159,7 @@ public class Gui extends JFrame {
         		blueBox.moveObject(playerInventory, doorKey);
         		playerInventory.removeObject(blueBox);
         		setOutput("You unlocked the blue box. Inside of it, you find another key");
-        	}
-        	
-        	if (player.getCurrentLocation() == 3 && playerInventory.isObjectHere(doorKey) && doorKey.fit(door)) {
+        	} else if (player.getCurrentLocation() == 3 && playerInventory.isObjectHere(doorKey) && doorKey.fit(door)) {
 				playerInventory.removeObject(doorKey);
 				rooms[3].removeObject(door);
 				setOutput("You successfully escaped!");
@@ -208,15 +206,16 @@ public class Gui extends JFrame {
         
     }
     
-    private void setGui() {
+    public void setGui() {
+    	System.out.println("Hello");
     	boxChecker();
     	
-    	setShowRoom(rooms[player.getCurrentLocation()].getRoom());
+    	setShowRoom(this.rooms[this.player.getCurrentLocation()].getRoom());
     	
-		setShowInventory(player.getInventory());
+		setShowInventory(this.player.getInventory());
 		
-		if (player.getCurrentLocation() == npc1.getPosition()) {
-			setShowPersons(npc1, rooms[npc1.getPosition()].getName());
+		if (this.player.getCurrentLocation() == this.npc1.getPosition()) {
+			setShowPersons(this.npc1, this.rooms[this.npc1.getPosition()].getName());
 		} else {
 			removeShowPersons();
 		}
@@ -227,5 +226,4 @@ public class Gui extends JFrame {
 			rooms[2].addObject(boxKey);
 		}
     }
-
 }

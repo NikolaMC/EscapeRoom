@@ -1,16 +1,19 @@
 package escapeRoomPackage;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Inventory {
 	private GameObject[] list;
-    private int size;
-
+	
     public Inventory(int size) {
-        this.size = size;
         list = new GameObject[size];
     }
     
+    // Add the entered object to this inventory if there is an empty space
     public void addObject(GameObject go) {
         int index = getFirstEmptyIndex();
 
@@ -22,16 +25,19 @@ public class Inventory {
         this.list[index] = go;
     }
     
+    // Remove the entered object from this inventory
     public void removeObject(GameObject go) {
-    	
-    	for (int i = 0; i < this.list.length; i++) {
-    		if (this.list[i] == null || this.list[i].equals(go)) {
-				this.list[i] = null;
-			}
-		}
+    	this.list = IntStream.range(0, this.list.length)
+    			.peek(x -> {
+    				if (x == indexOfItem(go)) {
+    					this.list[x] = null;
+    				}
+    			})
+    			.mapToObj(x -> this.list[x]).toArray(GameObject[]::new);
     	
     }
     
+    // Move an object from this inventory to the i2 inventory
     public void moveObject(Inventory i2, GameObject go) {
     	if (isObjectHere(go)) {
 			this.removeObject(go);
@@ -39,6 +45,7 @@ public class Inventory {
 		}
     }
     
+    // Swap the entered object from this inventory and the entered object from the i2 inventory
     public void tradeObject(Inventory i2, GameObject go, GameObject go1) {
     	if (isObjectHere(go) && i2.isObjectHere(go1)) {
     		GameObject item = go1;
@@ -53,24 +60,20 @@ public class Inventory {
         return Arrays.toString(this.list);
     }
     
+    // Get the first object in an inventory
     public GameObject firstObject() {
     	return this.list[0];
     }
     
+    // Get the names of all items in an inventory as a comma separated string
     public String getNames() {
-    	String listNames = "";
-    	
-    	for (int i = 0; i < list.length; i++) {
-			if (list[i] == null) {
-				listNames += " ";
-			} else {
-				listNames += list[i].getName() + ", ";
-			}
-		}
-    	
-    	return listNames;
+    	return Arrays.stream(this.list)
+    			.filter(Objects::nonNull)
+    			.map(x -> x.getName())
+    			.collect(Collectors.joining(", "));
     }
 
+    // Get the first empty spot in an inventory
     private int getFirstEmptyIndex() {
 
         for (int i = 0; i < this.list.length; i++) {
@@ -83,32 +86,28 @@ public class Inventory {
         
     }
     
-    public GameObject getItem(String itemName) {
-    	GameObject item = new GameObject("", false);
+    // Return an item with a specific name
+    public GameObject getItem(String itemName) {    	
+    	Optional<GameObject> item = Arrays.stream(this.list)
+    			.filter(Objects::nonNull)
+    			.filter(x -> x.getName().equals(itemName))
+    			.findFirst();
     	
-    	for (int i = 0; i < this.list.length; i++) {
-    		if (this.list[i] != null && this.list[i].getName().equals(itemName)) {
-				item = this.list[i];
-			}
+    	if (!item.isEmpty()) {
+			return item.get();
 		}
     	
-    	return item;
+    	return new GameObject("", false);
     }
     
+    // Check if the entered item is present in the inventory
     public boolean isObjectHere(GameObject go) {
-    	
-    	boolean objectHere = false;
-    	
-    	for (int i = 0; i < this.list.length; i++) {
-    		if (this.list[i] != null && this.list[i].equals(go)) {
-				objectHere = true;
-			}
-		}
-    	
-    	return objectHere;
-    	
+    	return Arrays.stream(this.list)
+    			.filter(Objects::nonNull)
+    			.anyMatch(x -> x.equals(go));
     }
     
+    // Check if the inventory has empty space left. If yes, return true. If it's full, return false
     public boolean isNotFull() {
     	
     	boolean notFull = true;
@@ -119,6 +118,15 @@ public class Inventory {
 		}
     	
     	return notFull;
+    	
+    }
+    
+    // Get the index of the entered object
+    public int indexOfItem(GameObject go) {
+    	
+    	int index = Arrays.stream(this.list).collect(Collectors.toList()).indexOf(go);
+    	
+    	return index;
     	
     }
 }
