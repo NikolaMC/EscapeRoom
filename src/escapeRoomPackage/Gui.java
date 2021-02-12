@@ -204,23 +204,23 @@ public class Gui extends JFrame {
         
         // If the user clicks "Save", saves the current progress of the game to a file on the user's computer (WIP)
         ActionListener saveListener = e -> {
-        	lists.add(this.rooms[0]);
-        	lists.add(this.rooms[1]);
-        	lists.add(this.rooms[2]);
-        	lists.add(this.rooms[3]);
+        	lists.addRoom(this.rooms[0]);
+        	lists.addRoom(this.rooms[1]);
+        	lists.addRoom(this.rooms[2]);
+        	lists.addRoom(this.rooms[3]);
         	
-        	lists.add(this.npc1);
+        	lists.addNpc(this.npc1);
         	
-        	lists.add(this.player);
+        	lists.addPlayer(this.player);
         	
-        	lists.add(items[0]);
-        	lists.add(items[1]);
-        	lists.add(items[2]);
-        	lists.add(items[3]);
-        	lists.add(items[4]);
-        	lists.add(items[5]);
-        	lists.add(items[6]);
-        	lists.add(items[7]);
+        	lists.addItem(items[0]);
+        	lists.addItem(items[1]);
+        	lists.addItem(items[2]);
+        	lists.addItem(items[3]);
+        	lists.addItem(items[4]);
+        	lists.addItem(items[5]);
+        	lists.addItem(items[6]);
+        	lists.addItem(items[7]);
         	
         	lists.save();
         	
@@ -229,7 +229,29 @@ public class Gui extends JFrame {
         
         // If the user clicks "Load", loads a saved file from the user's computer (WIP)
         ActionListener loadListener = e -> {
-        	System.out.println("Hi");
+        	lists.load();
+        	
+        	lists.show();
+        	
+//        	this.rooms[0] = lists.getRooms().get(0);
+//        	this.rooms[1] = lists.getRooms().get(1);
+//        	this.rooms[2] = lists.getRooms().get(2);
+//        	this.rooms[3] = lists.getRooms().get(3);
+//        	
+//        	this.npc1 = lists.getNpc().get(0);
+//        	
+//        	this.player = lists.getPlayer().get(0);
+//        	
+//        	this.items[0] = lists.getItems().get(0);
+//        	this.items[1] = lists.getItems().get(1);
+//        	this.items[2] = lists.getItems().get(2);
+//        	this.items[3] = lists.getItems().get(3);
+//        	this.items[4] = lists.getItems().get(4);
+//        	this.items[5] = lists.getItems().get(5);
+//        	this.items[6] = lists.getItems().get(6);
+//        	this.items[7] = lists.getItems().get(7);
+//        	
+//        	setGui();
         };
         
         // Create all of the buttons and add the appropriate action listeners to them
