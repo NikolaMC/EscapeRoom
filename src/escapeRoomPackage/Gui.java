@@ -215,6 +215,7 @@ public class Gui extends JFrame {
 		setShowInventory(this.player.getInventory());
 		
 		if (this.player.getCurrentLocation() == this.npc1.getPosition()) {
+
 			setShowPersons(this.npc1, this.rooms[this.npc1.getPosition()].getName());
 		} else {
 			removeShowPersons();

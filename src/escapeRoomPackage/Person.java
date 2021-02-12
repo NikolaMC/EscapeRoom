@@ -1,5 +1,7 @@
 package escapeRoomPackage;
 
+import com.sun.source.tree.SynchronizedTree;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -47,12 +49,17 @@ public class Person extends Npc implements Runnable {
 		}
     }
 
+
+
+
+
 	@Override
-	public void run() {
-		synchronize { gui.setGui(); }
+	public  void run() {
+
 		
-//		int rand = (int)(Math.random() * 6);
-		int rand = 5;
+		int rand = (int)(Math.random() * 6);
+		System.out.println("Random" +rand);
+	//int rand = 5;
 		switch (rand) {
 			case 0:
 				if(this.position == 1) {

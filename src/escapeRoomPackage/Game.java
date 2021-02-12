@@ -53,10 +53,11 @@ public class Game {
 		npc1.addObject(blueBox);
 		
 		this.gui = new Gui(rooms, player, npc1, boxKey, doorKey, blueBox, finalDoor);
-		
+		UpdateGui ug = new UpdateGui(this.gui);
 		ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(10);
-        pool.scheduleAtFixedRate(npc1, 2, 10, TimeUnit.SECONDS);
-		
+		pool.scheduleAtFixedRate(npc1, 2, 1, TimeUnit.SECONDS);
+		pool.scheduleAtFixedRate(ug, 1, 1, TimeUnit.SECONDS);
+
 	}
 	
 }
